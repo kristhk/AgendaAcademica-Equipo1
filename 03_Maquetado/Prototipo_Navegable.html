@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototipo Agenda Académica</title>
+<style>
+  :root{
+    --primario:#3949AB; --primario-cont:#DDE1FF; --en-primario-cont:#00105C;
+    --secundario-cont:#B2EBE3; --fondo:#F8F9FF; --superficie:#FFFFFF; --texto:#1A1B21; --texto-2:#45464F;
+    --borde:#C6C5D0; --error:#BA1A1A; --alta:#D32F2F; --media:#EF6C00; --baja:#2E7D32;
+    --pend:#607D8B; --prog:#1E88E5; --comp:#2E7D32;
+    --m1:#3949AB; --m2:#00897B; --m3:#F4511E; --m4:#D81B60;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Roboto,"Segoe UI",system-ui,sans-serif;background:#E9EAF2;color:var(--texto);padding:16px}
+  h1{font-size:20px;margin:0 0 4px} p.sub{margin:0 0 16px;color:var(--texto-2);font-size:14px}
+  nav.indice{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  nav.indice a{background:#fff;border:1px solid var(--borde);border-radius:16px;padding:6px 12px;font-size:13px;color:var(--primario);text-decoration:none}
+  .lienzo{display:flex;flex-wrap:wrap;gap:24px;justify-content:center}
+  .pantalla{width:300px;height:620px;background:var(--fondo);border:10px solid #1f1f24;border-radius:32px;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.18);display:flex;flex-direction:column}
+  .pantalla:target{outline:4px solid #FFB300;outline-offset:4px}
+  .etq{position:absolute;top:-30px;left:0;font-size:13px;font-weight:600;color:var(--texto-2)}
+  .marco{position:relative;margin-top:30px}
+  .estado{height:18px;font-size:10px;padding:2px 14px;color:var(--texto-2)}
+  .barra-sup{padding:6px 14px 10px;display:flex;align-items:center;gap:10px}
+  .barra-sup .t{font-size:19px} .barra-sup .s{font-size:11px;color:var(--texto-2)}
+  .ico{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;color:var(--texto-2)}
+  .contenido{flex:1;overflow:hidden;padding:0 12px}
+  .tarjeta{background:var(--superficie);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.12);margin-bottom:8px;display:flex;overflow:hidden;text-decoration:none;color:inherit}
+  .franja{width:5px;flex:none}
+  .tarjeta .cuerpo{padding:8px 10px;flex:1}
+  .tarjeta .ti{font-size:13px;font-weight:500} .tarjeta .mat{font-size:10px;color:var(--texto-2)}
+  .pildoras{display:flex;gap:4px;margin:5px 0 3px;flex-wrap:wrap}
+  .pil{font-size:9px;font-weight:600;border-radius:10px;padding:2px 7px}
+  .fecha{font-size:10px;color:var(--texto-2)} .fecha.venc{color:var(--error);font-weight:600}
+  .avance{background:var(--primario-cont);border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px;margin-bottom:8px;color:var(--en-primario-cont)}
+  .anillo{width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--primario) 0 25%, rgba(57,73,171,.18) 25% 100%);display:flex;align-items:center;justify-content:center}
+  .anillo span{background:var(--primario-cont);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .ind{display:flex;gap:6px;margin-bottom:8px} .ind div{flex:1;border:1px solid var(--borde);border-radius:10px;padding:6px 8px;font-size:10px;color:var(--texto-2)} .ind b{display:block;font-size:18px;color:var(--texto)}
+  .sec{display:flex;justify-content:space-between;font-size:13px;font-weight:500;margin:6px 0} .sec a{color:var(--primario);font-size:11px;text-decoration:none}
+  .fab{position:absolute;right:12px;bottom:70px;background:var(--primario-cont);color:var(--en-primario-cont);border-radius:14px;padding:12px 14px;font-size:12px;font-weight:500;text-decoration:none;box-shadow:0 3px 6px rgba(0,0,0,.2)}
+  .nav{height:56px;background:#EFEDF6;display:flex;justify-content:space-around;align-items:center;flex:none}
+  .nav a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--texto-2);text-decoration:none;gap:2px}
+  .nav a .p{width:46px;height:24px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .nav a.sel{color:#00695C;font-weight:600} .nav a.sel .p{background:var(--secundario-cont)}
+  .buscar{border:1px solid var(--texto-2);border-radius:4px;padding:8px;font-size:11px;color:var(--texto-2);margin-bottom:6px}
+  .chips{display:flex;gap:5px;margin-bottom:5px;overflow:hidden;white-space:nowrap}
+  .chip{border:1px solid var(--borde);border-radius:8px;padding:4px 8px;font-size:10px} .chip.sel{background:var(--secundario-cont);border-color:transparent}
+  .cont{font-size:10px;color:var(--texto-2);margin:4px 0 6px}
+  .chk{width:14px;height:14px;border:2px solid var(--texto-2);border-radius:2px;margin:12px 0 0 8px;flex:none} .chk.on{background:var(--primario);border-color:var(--primario)}
+  .campo{border:1px solid var(--texto-2);border-radius:4px;padding:9px 8px;font-size:11px;color:var(--texto-2);margin-bottom:3px}
+  .campo.err{border:2px solid var(--error);color:var(--error)} .ayuda{font-size:9px;color:var(--error);margin:0 0 8px 8px} .ayuda.g{color:var(--texto-2);text-align:right}
+  .seg{display:flex;border:1px solid var(--texto-2);border-radius:18px;overflow:hidden;margin:4px 0 10px} .seg span{flex:1;text-align:center;font-size:10px;padding:7px 0;border-right:1px solid var(--texto-2)} .seg span:last-child{border:0} .seg .on{background:var(--secundario-cont);font-weight:600}
+  .boton{display:block;text-align:center;background:var(--primario);color:#fff;border-radius:20px;padding:10px;font-size:12px;text-decoration:none;margin-top:6px}
+  .lbl{font-size:11px;font-weight:500;margin:4px 0}
+  .info{border:1px solid var(--borde);border-radius:12px;padding:8px 10px;font-size:10px;margin:8px 0} .info div{margin:4px 0} .info small{color:var(--texto-2);display:block}
+  .hist{font-size:10px;margin:5px 0} .hist small{color:var(--texto-2);display:block}
+  .barra{height:6px;border-radius:3px;background:#E2E1EC;margin:3px 0 8px;overflow:hidden} .barra i{display:block;height:100%}
+  .fila{display:flex;justify-content:space-between;font-size:10px}
+  .bloque{background:var(--superficie);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.12);padding:10px;margin-bottom:8px} .bloque h4{margin:0 0 6px;font-size:12px;font-weight:500}
+  .velo{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+  .dialogo{background:#F3F1FA;border-radius:24px;padding:16px;width:250px}
+  .dialogo h3{margin:0 0 10px;font-size:16px;font-weight:400}
+  .colores{display:grid;grid-template-columns:repeat(4,28px);gap:10px;margin:6px 0 10px} .colores span{width:28px;height:28px;border-radius:50%}
+  .acciones{display:flex;justify-content:flex-end;gap:14px;font-size:12px;color:var(--primario);font-weight:500} .acciones a{color:inherit;text-decoration:none}
+  .mat-av{display:flex;gap:10px;align-items:center} .circ{width:34px;height:34px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px;flex:none}
+  .leyenda{max-width:980px;margin:28px auto 0;background:#fff;border-radius:12px;padding:16px;font-size:13px;line-height:1.5}
+  .leyenda code{background:#EEF;padding:1px 4px;border-radius:3px}
+</style>
+</head>
+<body>
+<h1>Agenda Académica: prototipo navegable (Equipo 1)</h1>
+<p class="sub">Maquetas de baja-media fidelidad con la paleta y los componentes de Material 3 que se usan en la app. Los elementos <u>subrayados en azul</u>, las tarjetas, los botones y la barra inferior son enlaces: haz clic para recorrer los flujos principales (la pantalla destino se resalta).</p>
+<nav class="indice">
+  <a href="#p0">P0 Bienvenida</a><a href="#p1">P1 Inicio</a><a href="#p2">P2 Tareas</a><a href="#p3">P3 Materias</a><a href="#p4">P4 Avances</a>
+  <a href="#p5">P5 Detalle</a><a href="#p6">P6 Formulario</a><a href="#p6e">P6 Validación</a><a href="#d1">D1 Diálogo materia</a><a href="#d3">D3 Eliminar materia</a>
+</nav>
+
+<div class="lienzo">
+
+<!-- P0 -->
+<div class="marco"><span class="etq">P0 · Inicio (agenda vacía)</span>
+<section class="pantalla" id="p0">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><div><div class="t"><b>Agenda Académica</b></div><div class="s">Viernes, 20 de noviembre</div></div></div>
+  <div class="contenido" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px">
+    <div style="font-size:48px;color:var(--primario)">🎓</div>
+    <div style="font-size:16px;margin:8px 0">¡Bienvenido a tu Agenda Académica!</div>
+    <div style="font-size:11px;color:var(--texto-2)">Comienza registrando las materias que cursas; después podrás agregar tus tareas.</div>
+    <a class="boton" href="#p3" style="width:180px;margin-top:18px">Registrar mis materias</a>
+    <a class="boton" href="#p1" style="width:180px;background:transparent;color:var(--primario);border:1px solid var(--texto-2)">Cargar datos de ejemplo</a>
+  </div>
+  <div class="nav"><a class="sel" href="#p1"><span class="p">⌂</span>Inicio</a><a href="#p2"><span class="p">▤</span>Tareas</a><a href="#p3"><span class="p">📘</span>Materias</a><a href="#p4"><span class="p">↗</span>Avances</a></div>
+</section></div>
+
+<!-- P1 -->
+<div class="marco"><span class="etq">P1 · Inicio / panel</span>
+<section class="pantalla" id="p1">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><div><div class="t"><b>Agenda Académica</b></div><div class="s">Viernes, 20 de noviembre</div></div></div>
+  <div class="contenido">
+    <div class="avance"><div class="anillo"><span>25%</span></div><div><div style="font-size:14px;font-weight:500">Avance general</div><div style="font-size:11px">2 de 8 tareas completadas</div></div></div>
+    <div class="ind"><div>⏳<b>4</b>Pendientes</div><div style="color:var(--prog)">⟳<b>2</b>En progreso</div><div style="color:var(--error)">⚠<b>1</b>Vencidas</div></div>
+    <div class="sec">Próximas entregas (7 días)<a href="#p2">Ver todas</a></div>
+    <a class="tarjeta" href="#p5"><span class="franja" style="background:var(--m4)"></span><div class="cuerpo"><div class="ti">Ejercicios de integración</div><div class="mat">Cálculo Integral</div><div class="pildoras"><span class="pil" style="background:#FBE3E3;color:var(--alta)">Prioridad alta</span><span class="pil" style="background:#DDEBFB;color:var(--prog)">En progreso</span></div><div class="fecha">📅 20 nov 2026 · Vence hoy</div></div></a>
+    <a class="tarjeta" href="#p5"><span class="franja" style="background:var(--m1)"></span><div class="cuerpo"><div class="ti">Entregar maquetas en Figma</div><div class="mat">Programación de Móviles</div><div class="pildoras"><span class="pil" style="background:#FBE3E3;color:var(--alta)">Prioridad alta</span><span class="pil" style="background:#DDEBFB;color:var(--prog)">En progreso</span></div><div class="fecha">📅 21 nov 2026 · Vence mañana</div></div></a>
+  </div>
+  <a class="fab" href="#p6">＋ Nueva tarea</a>
+  <div class="nav"><a class="sel" href="#p1"><span class="p">⌂</span>Inicio</a><a href="#p2"><span class="p">▤</span>Tareas</a><a href="#p3"><span class="p">📘</span>Materias</a><a href="#p4"><span class="p">↗</span>Avances</a></div>
+</section></div>
+
+<!-- P2 -->
+<div class="marco"><span class="etq">P2 · Tareas (consulta y filtros)</span>
+<section class="pantalla" id="p2">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><div class="t" style="flex:1">Mis tareas</div><span class="ico" title="Ordenar">☰</span></div>
+  <div class="contenido">
+    <div class="buscar">🔍 Buscar por título o descripción</div>
+    <div class="chips"><span class="chip sel">Todas</span><span class="chip">Pendiente</span><span class="chip">En progreso</span><span class="chip">Completada</span></div>
+    <div class="chips"><span class="chip">Prioridad alta</span><span class="chip">Prioridad media</span><span class="chip">● Bases de Datos</span></div>
+    <div class="cont">8 de 8 tareas</div>
+    <a class="tarjeta" href="#p5"><span class="franja" style="background:var(--m1)"></span><span class="chk on"></span><div class="cuerpo"><div class="ti" style="text-decoration:line-through;color:var(--texto-2)">Práctica de Room</div><div class="mat">Programación de Móviles</div><div class="pildoras"><span class="pil" style="background:#FDEBDD;color:var(--media)">Prioridad media</span><span class="pil" style="background:#DDEEDD;color:var(--comp)">Completada</span></div><div class="fecha">📅 17 nov 2026</div></div></a>
+    <a class="tarjeta" href="#p5"><span class="franja" style="background:var(--m2)"></span><span class="chk"></span><div class="cuerpo"><div class="ti">Consultas SQL avanzadas</div><div class="mat">Bases de Datos</div><div class="pildoras"><span class="pil" style="background:#DDEEDD;color:var(--baja)">Prioridad baja</span><span class="pil" style="background:#E6ECEF;color:var(--pend)">Pendiente</span></div><div class="fecha venc">📅 18 nov 2026 · Venció hace 2 días</div></div></a>
+    <a class="tarjeta" href="#p5"><span class="franja" style="background:var(--m4)"></span><span class="chk"></span><div class="cuerpo"><div class="ti">Ejercicios de integración</div><div class="mat">Cálculo Integral</div><div class="pildoras"><span class="pil" style="background:#FBE3E3;color:var(--alta)">Prioridad alta</span><span class="pil" style="background:#DDEBFB;color:var(--prog)">En progreso</span></div><div class="fecha">📅 20 nov 2026 · Vence hoy</div></div></a>
+  </div>
+  <a class="fab" href="#p6" style="padding:12px 16px">＋</a>
+  <div class="nav"><a href="#p1"><span class="p">⌂</span>Inicio</a><a class="sel" href="#p2"><span class="p">▤</span>Tareas</a><a href="#p3"><span class="p">📘</span>Materias</a><a href="#p4"><span class="p">↗</span>Avances</a></div>
+</section></div>
+
+<!-- P3 -->
+<div class="marco"><span class="etq">P3 · Materias</span>
+<section class="pantalla" id="p3">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><div class="t">Mis materias</div></div>
+  <div class="contenido">
+    <div class="bloque mat-av"><span class="circ" style="background:var(--m2)">B</span><div style="flex:1"><div style="font-size:13px">Bases de Datos</div><div class="mat" style="font-size:10px;color:var(--texto-2)">Docente de BD</div><div class="barra"><i style="width:0;background:var(--m2)"></i></div><div style="font-size:9px;color:var(--texto-2)">0 de 2 tareas completadas · 0%</div></div><a href="#d1" class="ico">✎</a><a href="#d3" class="ico">🗑</a></div>
+    <div class="bloque mat-av"><span class="circ" style="background:var(--m3)">I</span><div style="flex:1"><div style="font-size:13px">Ingeniería de Software</div><div style="font-size:10px;color:var(--texto-2)">Docente de IS</div><div class="barra"><i style="width:50%;background:var(--m3)"></i></div><div style="font-size:9px;color:var(--texto-2)">1 de 2 tareas completadas · 50%</div></div><a href="#d1" class="ico">✎</a><a href="#d3" class="ico">🗑</a></div>
+    <div class="bloque mat-av"><span class="circ" style="background:var(--m1)">P</span><div style="flex:1"><div style="font-size:13px">Programación de Móviles</div><div style="font-size:10px;color:var(--texto-2)">Docente de Móviles</div><div class="barra"><i style="width:33%;background:var(--m1)"></i></div><div style="font-size:9px;color:var(--texto-2)">1 de 3 tareas completadas · 33%</div></div><a href="#d1" class="ico">✎</a><a href="#d3" class="ico">🗑</a></div>
+  </div>
+  <a class="fab" href="#d1">＋ Nueva materia</a>
+  <div class="nav"><a href="#p1"><span class="p">⌂</span>Inicio</a><a href="#p2"><span class="p">▤</span>Tareas</a><a class="sel" href="#p3"><span class="p">📘</span>Materias</a><a href="#p4"><span class="p">↗</span>Avances</a></div>
+</section></div>
+
+<!-- P4 -->
+<div class="marco"><span class="etq">P4 · Avances (reportes)</span>
+<section class="pantalla" id="p4">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><div class="t">Avances y estadísticas</div></div>
+  <div class="contenido">
+    <div class="avance"><div class="anillo"><span>25%</span></div><div><div style="font-size:14px;font-weight:500">Avance general</div><div style="font-size:11px">2 de 8 tareas completadas</div></div></div>
+    <div class="bloque"><h4>Tareas por estado</h4>
+      <div class="fila"><span>Pendientes</span><span>4 de 8 (50%)</span></div><div class="barra"><i style="width:50%;background:var(--pend)"></i></div>
+      <div class="fila"><span>En progreso</span><span>2 de 8 (25%)</span></div><div class="barra"><i style="width:25%;background:var(--prog)"></i></div>
+      <div class="fila"><span>Completadas</span><span>2 de 8 (25%)</span></div><div class="barra"><i style="width:25%;background:var(--comp)"></i></div>
+      <div class="fila"><span>Vencidas</span><span>1 de 8 (13%)</span></div><div class="barra"><i style="width:13%;background:var(--error)"></i></div></div>
+    <div class="bloque"><h4>Puntualidad de entregas</h4><div style="display:flex;justify-content:space-around;text-align:center;font-size:10px"><div><b style="font-size:20px;color:var(--comp)">1</b><br>A tiempo</div><div><b style="font-size:20px;color:var(--media)">1</b><br>Con retraso</div><div><b style="font-size:20px;color:var(--primario)">50%</b><br>Puntualidad</div></div></div>
+    <div class="bloque"><h4>Avance por materia</h4><div class="fila"><span>Programación de Móviles</span><span>1 de 3 (33%)</span></div><div class="barra"><i style="width:33%;background:var(--m1)"></i></div></div>
+  </div>
+  <div class="nav"><a href="#p1"><span class="p">⌂</span>Inicio</a><a href="#p2"><span class="p">▤</span>Tareas</a><a href="#p3"><span class="p">📘</span>Materias</a><a class="sel" href="#p4"><span class="p">↗</span>Avances</a></div>
+</section></div>
+
+<!-- P5 -->
+<div class="marco"><span class="etq">P5 · Detalle de tarea</span>
+<section class="pantalla" id="p5">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><a href="#p2" class="ico" style="text-decoration:none">←</a><div class="t" style="flex:1;font-size:16px">Detalle de la tarea</div><a href="#p6" class="ico" style="text-decoration:none">✎</a><span class="ico">🗑</span></div>
+  <div class="contenido">
+    <div style="font-size:18px;font-weight:600">Consultas SQL avanzadas</div>
+    <div class="pildoras" style="margin-top:8px"><span class="pil" style="background:#D8EFEC;color:var(--m2)">Bases de Datos</span></div>
+    <div class="pildoras"><span class="pil" style="background:#DDEEDD;color:var(--baja)">Prioridad baja</span><span class="pil" style="background:#E6ECEF;color:var(--pend)">Pendiente</span></div>
+    <div style="background:#FFDAD6;color:#410002;border-radius:10px;padding:8px;font-size:10px;margin-top:6px">⚠ Esta tarea está vencida: venció hace 2 días.</div>
+    <div class="info"><div><small>Fecha de entrega</small>18 nov 2026 (Venció hace 2 días)</div><div><small>Registrada</small>15 nov 2026, 10:20</div></div>
+    <div class="lbl">Descripción</div><div style="font-size:10px">JOIN, GROUP BY y subconsultas.</div>
+    <div class="lbl" style="margin-top:8px">Cambiar estado</div>
+    <div class="seg"><span class="on">✓ Pendiente</span><span>En progreso</span><span>Completada</span></div>
+    <div class="lbl">Historial de estados</div>
+    <div class="hist">↺ Registrada como Pendiente<small>15 nov 2026, 10:20</small></div>
+  </div>
+</section></div>
+
+<!-- P6 -->
+<div class="marco"><span class="etq">P6 · Formulario de tarea</span>
+<section class="pantalla" id="p6">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><a href="#p2" class="ico" style="text-decoration:none">←</a><div class="t">Nueva tarea</div></div>
+  <div class="contenido">
+    <div class="campo">Título *</div><div class="ayuda g">0/80</div>
+    <div class="campo" style="height:60px">Descripción (opcional)</div><div class="ayuda g">0/500</div>
+    <div class="campo">Materia * <span style="float:right">▾</span></div><div class="ayuda"></div>
+    <div class="lbl">Prioridad *</div>
+    <div class="seg"><span>Baja</span><span class="on">✓ Media</span><span>Alta</span></div>
+    <div class="campo">📅 Fecha de entrega *</div><div class="ayuda"></div>
+    <a class="boton" href="#p6e">💾 Registrar tarea</a>
+    <div style="font-size:9px;color:var(--texto-2);margin-top:6px">* Campos obligatorios</div>
+  </div>
+</section></div>
+
+<!-- P6 errores -->
+<div class="marco"><span class="etq">P6 · Validación de campos</span>
+<section class="pantalla" id="p6e">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><a href="#p2" class="ico" style="text-decoration:none">←</a><div class="t">Nueva tarea</div></div>
+  <div class="contenido">
+    <div class="campo err">Título *</div><div class="ayuda">El título es obligatorio <span style="float:right">0/80</span></div>
+    <div class="campo" style="height:60px">Descripción (opcional)</div><div class="ayuda g">0/500</div>
+    <div class="campo err">Materia * <span style="float:right">▾</span></div><div class="ayuda">Selecciona una materia</div>
+    <div class="lbl">Prioridad *</div>
+    <div class="seg"><span>Baja</span><span class="on">✓ Media</span><span>Alta</span></div>
+    <div class="campo err">📅 Fecha de entrega *</div><div class="ayuda">Selecciona la fecha de entrega</div>
+    <a class="boton" href="#p2">💾 Registrar tarea</a>
+    <div style="background:#2F3036;color:#fff;border-radius:6px;padding:10px;font-size:10px;margin-top:12px">Revisa los campos marcados en rojo</div>
+  </div>
+</section></div>
+
+<!-- D1 -->
+<div class="marco"><span class="etq">D1 · Diálogo nueva/editar materia</span>
+<section class="pantalla" id="d1">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><div class="t">Mis materias</div></div>
+  <div class="contenido"></div>
+  <div class="velo"><div class="dialogo"><h3>Nueva materia</h3>
+    <div class="campo">Nombre *</div><div class="ayuda"></div>
+    <div class="campo">Profesor(a) (opcional)</div><div class="ayuda"></div>
+    <div class="lbl">Color</div>
+    <div class="colores"><span style="background:#3949AB;outline:3px solid #1A1B21"></span><span style="background:#00897B"></span><span style="background:#F4511E"></span><span style="background:#D81B60"></span><span style="background:#8E24AA"></span><span style="background:#43A047"></span><span style="background:#FFB300"></span><span style="background:#546E7A"></span></div>
+    <div class="acciones"><a href="#p3">Cancelar</a><a href="#p3">Guardar</a></div></div></div>
+</section></div>
+
+<!-- D3 -->
+<div class="marco"><span class="etq">D3 · Eliminar materia con tareas (RN-09)</span>
+<section class="pantalla" id="d3">
+  <div class="estado">9:41</div>
+  <div class="barra-sup"><div class="t">Mis materias</div></div>
+  <div class="contenido"></div>
+  <div class="velo"><div class="dialogo"><h3>No se puede eliminar</h3>
+    <div style="font-size:12px;color:var(--texto-2);margin-bottom:14px">"Bases de Datos" tiene 2 tarea(s) asociada(s). Elimínalas o cámbialas de materia antes de borrarla.</div>
+    <div class="acciones"><a href="#p3">Entendido</a></div></div></div>
+</section></div>
+
+</div>
+
+<div class="leyenda">
+  <b>Guía de estilo usada en las maquetas y en la app</b><br>
+  Color primario <code>#3949AB</code> (índigo) · contenedor primario <code>#DDE1FF</code> · secundario <code>#00897B</code> · fondo <code>#F8F9FF</code> · error <code>#BA1A1A</code>.<br>
+  Prioridad: alta <code>#D32F2F</code>, media <code>#EF6C00</code>, baja <code>#2E7D32</code>. Estado: pendiente <code>#607D8B</code>, en progreso <code>#1E88E5</code>, completada <code>#2E7D32</code>.<br>
+  Tipografía: Roboto (la escala tipográfica predeterminada de Material 3). Iconos: Material Icons (en la maqueta se representan con símbolos de texto).
+</div>
+</body>
+</html>
