@@ -1,0 +1,33 @@
+# ---------- Android / Gradle ----------
+.gradle/
+**/build/
+.kotlin/
+local.properties
+*.iml
+.idea/
+.cxx/
+.externalNativeBuild/
+captures/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.keystore
+*.jks
+# Reportes generados por Gradle (se regeneran con los comandos de ESTADO_PROYECTO.md)
+app-android/app/build/
+
+# ---------- Sistema / editores ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+*.swp
+
+# ---------- Archivos temporales de Office ----------
+~$*
+*.tmp
+
+# ---------- Python ----------
+__pycache__/
+*.pyc
