@@ -17,5 +17,6 @@ Para verlo completo: `git log --stat` dentro de la carpeta del proyecto.
 | `54be89e` | 2026-11-20 19:50 | Expediente: entregable 6 (desarrollo agéntico) y estado del proyecto | Sí |
 | `2f1bd73` | 2026-11-20 19:50 | Agregar .gitattributes (gradlew con LF, binarios protegidos) | Sí |
 | `ae99266` | 2026-11-20 20:19 | Pruebas de inyección SQL y persistencia; corregir buscador con fuente grande | Sí |
+| `2534c76` | 2026-11-20 20:33 | Expediente en DOCX y PDF, prototipo funcional y documentación actualizada | Sí |
 
-Total de commits al generar este documento: **11** (el commit que incluye este archivo puede no aparecer en la lista).
+Total de commits al generar este documento: **12** (el commit que incluye este archivo puede no aparecer en la lista).
