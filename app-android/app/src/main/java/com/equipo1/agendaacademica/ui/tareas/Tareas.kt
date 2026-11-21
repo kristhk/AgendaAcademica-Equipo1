@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -158,7 +159,8 @@ fun TareasScreen(
             OutlinedTextField(
                 value = f.texto,
                 onValueChange = viewModel::buscar,
-                placeholder = { Text("Buscar por título o descripción") },
+                // Una sola línea: con fuente grande del sistema no debe agrandar el campo (prueba C-6)
+                placeholder = { Text("Buscar por título o descripción", maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                 trailingIcon = {
                     if (f.texto.isNotEmpty()) {

@@ -31,3 +31,4 @@ desktop.ini
 # ---------- Python ----------
 __pycache__/
 *.pyc
+herramientas/_build/

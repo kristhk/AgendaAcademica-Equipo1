@@ -180,6 +180,39 @@ class RepositorioAcademicoTest {
         assertEquals(0, avance.getValue("Sin tareas").completadas)
     }
 
+    /** Instrumento 6, S-2: los textos se guardan como datos (parámetros enlazados), nunca como SQL. */
+    @Test
+    fun textoConSqlMalicioso_seGuardaLiteralYNoAfectaLaBase() = runTest {
+        val malicioso = "'); DROP TABLE tareas;--"
+        val id = repo.crearTarea(malicioso, "x' OR '1'='1", crearMateria(), Prioridad.BAJA, hoy)
+        repo.crearTarea("Otra tarea", "", repo.materias.first().first().id, Prioridad.BAJA, hoy)
+
+        assertEquals(malicioso, repo.obtenerTarea(id)!!.titulo)
+        assertEquals(2, repo.tareas.first().size) // la tabla sigue existiendo y completa
+    }
+
+    /** RNF-02: los datos persisten en el archivo SQLite al cerrar y volver a abrir la base. */
+    @Test
+    fun datosPersistenEnDisco_alCerrarYReabrirLaBase() = runTest {
+        val contexto = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val nombre = "prueba_persistencia.db"
+        contexto.deleteDatabase(nombre)
+
+        val bd1 = Room.databaseBuilder(contexto, AgendaDatabase::class.java, nombre).build()
+        val repo1 = RepositorioAcademico(bd1)
+        repo1.guardarMateria(null, "Persistente", "", 0)
+        repo1.crearTarea("Tarea guardada", "", repo1.materias.first().first().id, Prioridad.ALTA, hoy)
+        bd1.close()
+
+        val bd2 = Room.databaseBuilder(contexto, AgendaDatabase::class.java, nombre).build()
+        val lista = RepositorioAcademico(bd2).tareas.first()
+        assertEquals(1, lista.size)
+        assertEquals("Tarea guardada", lista[0].tarea.titulo)
+        assertEquals("Persistente", lista[0].materia.nombre)
+        bd2.close()
+        contexto.deleteDatabase(nombre)
+    }
+
     @Test
     fun datosDeEjemplo_soloConAgendaVacia() = runTest {
         assertEquals(ResultadoOperacion.Exito, repo.cargarDatosEjemplo(hoy))
