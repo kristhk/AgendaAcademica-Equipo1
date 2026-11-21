@@ -116,13 +116,16 @@
   <div class="estado">9:41</div>
   <div class="barra-sup"><div class="t" style="flex:1">Mis tareas</div><span class="ico" title="Ordenar">☰</span></div>
   <div class="contenido">
-    <div class="buscar">🔍 Buscar por título o descripción</div>
-    <div class="chips"><span class="chip sel">Todas</span><span class="chip">Pendiente</span><span class="chip">En progreso</span><span class="chip">Completada</span></div>
-    <div class="chips"><span class="chip">Prioridad alta</span><span class="chip">Prioridad media</span><span class="chip">● Bases de Datos</span></div>
-    <div class="cont">8 de 8 tareas</div>
-    <a class="tarjeta" href="#p5"><span class="franja" style="background:var(--m1)"></span><span class="chk on"></span><div class="cuerpo"><div class="ti" style="text-decoration:line-through;color:var(--texto-2)">Práctica de Room</div><div class="mat">Programación de Móviles</div><div class="pildoras"><span class="pil" style="background:#FDEBDD;color:var(--media)">Prioridad media</span><span class="pil" style="background:#DDEEDD;color:var(--comp)">Completada</span></div><div class="fecha">📅 17 nov 2026</div></div></a>
-    <a class="tarjeta" href="#p5"><span class="franja" style="background:var(--m2)"></span><span class="chk"></span><div class="cuerpo"><div class="ti">Consultas SQL avanzadas</div><div class="mat">Bases de Datos</div><div class="pildoras"><span class="pil" style="background:#DDEEDD;color:var(--baja)">Prioridad baja</span><span class="pil" style="background:#E6ECEF;color:var(--pend)">Pendiente</span></div><div class="fecha venc">📅 18 nov 2026 · Venció hace 2 días</div></div></a>
-    <a class="tarjeta" href="#p5"><span class="franja" style="background:var(--m4)"></span><span class="chk"></span><div class="cuerpo"><div class="ti">Ejercicios de integración</div><div class="mat">Cálculo Integral</div><div class="pildoras"><span class="pil" style="background:#FBE3E3;color:var(--alta)">Prioridad alta</span><span class="pil" style="background:#DDEBFB;color:var(--prog)">En progreso</span></div><div class="fecha">📅 20 nov 2026 · Vence hoy</div></div></a>
+    <input class="buscar" id="buscar" placeholder="🔍 Buscar por título o descripción" style="width:100%;font:inherit;font-size:11px;background:transparent">
+    <div class="chips" data-filtro="estado"><span class="chip sel" data-v="">Todas</span><span class="chip" data-v="Pendiente">Pendiente</span><span class="chip" data-v="En progreso">En progreso</span><span class="chip" data-v="Completada">Completada</span></div>
+    <div class="chips" data-filtro="prioridad"><span class="chip" data-v="alta">Prioridad alta</span><span class="chip" data-v="media">Prioridad media</span><span class="chip" data-v="baja">Prioridad baja</span></div>
+    <div class="cont" id="contador">3 de 3 tareas</div>
+    <div id="lista-tareas">
+    <a class="tarjeta" href="#p5" data-estado="Completada" data-prioridad="media"><span class="franja" style="background:var(--m1)"></span><span class="chk on"></span><div class="cuerpo"><div class="ti">Práctica de Room</div><div class="mat">Programación de Móviles</div><div class="pildoras"><span class="pil" style="background:#FDEBDD;color:var(--media)">Prioridad media</span><span class="pil pil-estado" style="background:#DDEEDD;color:var(--comp)">Completada</span></div><div class="fecha">📅 17 nov 2026</div></div></a>
+    <a class="tarjeta" href="#p5" data-estado="Pendiente" data-prioridad="baja"><span class="franja" style="background:var(--m2)"></span><span class="chk"></span><div class="cuerpo"><div class="ti">Consultas SQL avanzadas</div><div class="mat">Bases de Datos</div><div class="pildoras"><span class="pil" style="background:#DDEEDD;color:var(--baja)">Prioridad baja</span><span class="pil pil-estado" style="background:#E6ECEF;color:var(--pend)">Pendiente</span></div><div class="fecha venc">📅 18 nov 2026 · Venció hace 2 días</div></div></a>
+    <a class="tarjeta" href="#p5" data-estado="En progreso" data-prioridad="alta"><span class="franja" style="background:var(--m4)"></span><span class="chk"></span><div class="cuerpo"><div class="ti">Ejercicios de integración</div><div class="mat">Cálculo Integral</div><div class="pildoras"><span class="pil" style="background:#FBE3E3;color:var(--alta)">Prioridad alta</span><span class="pil pil-estado" style="background:#DDEBFB;color:var(--prog)">En progreso</span></div><div class="fecha">📅 20 nov 2026 · Vence hoy</div></div></a>
+    </div>
+    <div id="sin-resultados" style="display:none;text-align:center;font-size:11px;color:var(--texto-2);padding:20px">Sin resultados<br>Ninguna tarea coincide con los filtros.</div>
   </div>
   <a class="fab" href="#p6" style="padding:12px 16px">＋</a>
   <div class="nav"><a href="#p1"><span class="p">⌂</span>Inicio</a><a class="sel" href="#p2"><span class="p">▤</span>Tareas</a><a href="#p3"><span class="p">📘</span>Materias</a><a href="#p4"><span class="p">↗</span>Avances</a></div>
@@ -185,14 +188,14 @@
   <div class="estado">9:41</div>
   <div class="barra-sup"><a href="#p2" class="ico" style="text-decoration:none">←</a><div class="t">Nueva tarea</div></div>
   <div class="contenido">
-    <div class="campo">Título *</div><div class="ayuda g">0/80</div>
-    <div class="campo" style="height:60px">Descripción (opcional)</div><div class="ayuda g">0/500</div>
-    <div class="campo">Materia * <span style="float:right">▾</span></div><div class="ayuda"></div>
+    <input class="campo" id="f-titulo" placeholder="Título *" maxlength="90" style="width:100%;font:inherit;font-size:11px;background:transparent"><div class="ayuda" id="e-titulo"></div>
+    <textarea class="campo" id="f-desc" placeholder="Descripción (opcional)" style="width:100%;height:50px;font:inherit;font-size:11px;background:transparent;resize:none"></textarea><div class="ayuda g">máx. 500</div>
+    <select class="campo" id="f-materia" style="width:100%;font:inherit;font-size:11px;background:transparent"><option value="">Materia *</option><option>Programación de Móviles</option><option>Bases de Datos</option><option>Ingeniería de Software</option><option>Cálculo Integral</option></select><div class="ayuda" id="e-materia"></div>
     <div class="lbl">Prioridad *</div>
-    <div class="seg"><span>Baja</span><span class="on">✓ Media</span><span>Alta</span></div>
-    <div class="campo">📅 Fecha de entrega *</div><div class="ayuda"></div>
-    <a class="boton" href="#p6e">💾 Registrar tarea</a>
-    <div style="font-size:9px;color:var(--texto-2);margin-top:6px">* Campos obligatorios</div>
+    <div class="seg" id="f-prioridad"><span data-v="baja">Baja</span><span class="on" data-v="media">✓ Media</span><span data-v="alta">Alta</span></div>
+    <input class="campo" id="f-fecha" type="date" style="width:100%;font:inherit;font-size:11px;background:transparent"><div class="ayuda" id="e-fecha"></div>
+    <a class="boton" href="#p6" onclick="return registrarTarea()">💾 Registrar tarea</a>
+    <div style="font-size:9px;color:var(--texto-2);margin-top:6px">* Campos obligatorios · <a href="#p6e">ver estado de validación</a></div>
   </div>
 </section></div>
 
@@ -240,11 +243,143 @@
 
 </div>
 
-<div class="leyenda">
-  <b>Guía de estilo usada en las maquetas y en la app</b><br>
-  Color primario <code>#3949AB</code> (índigo) · contenedor primario <code>#DDE1FF</code> · secundario <code>#00897B</code> · fondo <code>#F8F9FF</code> · error <code>#BA1A1A</code>.<br>
-  Prioridad: alta <code>#D32F2F</code>, media <code>#EF6C00</code>, baja <code>#2E7D32</code>. Estado: pendiente <code>#607D8B</code>, en progreso <code>#1E88E5</code>, completada <code>#2E7D32</code>.<br>
-  Tipografía: Roboto (la escala tipográfica predeterminada de Material 3). Iconos: Material Icons (en la maqueta se representan con símbolos de texto).
+<div class="leyenda" id="guia">
+  <h2 style="margin-top:0;font-size:18px">Guía de estilo (aplicada en la app real: <code>ui/theme/Tema.kt</code>)</h2>
+
+  <h3 style="font-size:15px">1. Colores</h3>
+  <div class="muestras">
+    <div><span style="background:#3949AB"></span>Primario<br><code>#3949AB</code></div>
+    <div><span style="background:#DDE1FF"></span>Contenedor primario<br><code>#DDE1FF</code></div>
+    <div><span style="background:#00897B"></span>Secundario<br><code>#00897B</code></div>
+    <div><span style="background:#B2EBE3"></span>Cont. secundario<br><code>#B2EBE3</code></div>
+    <div><span style="background:#F8F9FF;border:1px solid #ccc"></span>Fondo<br><code>#F8F9FF</code></div>
+    <div><span style="background:#BA1A1A"></span>Error / vencida<br><code>#BA1A1A</code></div>
+    <div><span style="background:#D32F2F"></span>Prioridad alta<br><code>#D32F2F</code></div>
+    <div><span style="background:#EF6C00"></span>Prioridad media<br><code>#EF6C00</code></div>
+    <div><span style="background:#2E7D32"></span>Prioridad baja / completada<br><code>#2E7D32</code></div>
+    <div><span style="background:#607D8B"></span>Pendiente<br><code>#607D8B</code></div>
+    <div><span style="background:#1E88E5"></span>En progreso<br><code>#1E88E5</code></div>
+  </div>
+  <p style="margin:6px 0">Paleta de materias (8): <span class="mini" style="background:#3949AB"></span><span class="mini" style="background:#00897B"></span><span class="mini" style="background:#F4511E"></span><span class="mini" style="background:#D81B60"></span><span class="mini" style="background:#8E24AA"></span><span class="mini" style="background:#43A047"></span><span class="mini" style="background:#FFB300"></span><span class="mini" style="background:#546E7A"></span> · Tema oscuro automático con primario <code>#B9C3FF</code> y fondo <code>#121318</code>.</p>
+
+  <h3 style="font-size:15px">2. Tipografía: Roboto, escala de Material 3</h3>
+  <div style="font-family:Roboto,'Segoe UI',sans-serif">
+    <div style="font-size:24px">headlineSmall 24 sp — Título del detalle de tarea</div>
+    <div style="font-size:22px">titleLarge 22 sp — Porcentaje "25%"</div>
+    <div style="font-size:16px;font-weight:500">titleMedium 16 sp — Título de tarjeta y de sección</div>
+    <div style="font-size:14px">bodyMedium 14 sp — Textos de contenido y descripciones</div>
+    <div style="font-size:12px;color:var(--texto-2)">bodySmall 12 sp — Materia, fechas y metadatos</div>
+    <div style="font-size:12px;font-weight:600">labelMedium 12 sp — Píldoras y etiquetas de la barra inferior</div>
+  </div>
+
+  <h3 style="font-size:15px">3. Componentes</h3>
+  <div class="galeria">
+    <div><a class="boton" style="width:150px" href="#guia">Botón principal</a><small>Button (acción principal)</small></div>
+    <div><span class="fab" style="position:static;display:inline-block">＋ Nueva tarea</span><small>ExtendedFloatingActionButton</small></div>
+    <div><span class="chip sel">Todas</span> <span class="chip">Pendiente</span><small>FilterChip (filtros)</small></div>
+    <div><div class="seg" style="width:180px"><span>Baja</span><span class="on">✓ Media</span><span>Alta</span></div><small>SegmentedButton (prioridad / estado)</small></div>
+    <div><span class="pil" style="background:#FBE3E3;color:var(--alta)">Prioridad alta</span> <span class="pil" style="background:#DDEBFB;color:var(--prog)">En progreso</span><small>Píldora de prioridad / estado</small></div>
+    <div><div class="campo err" style="width:180px">Título *</div><div class="ayuda">El título es obligatorio</div><small>OutlinedTextField con error</small></div>
+    <div style="width:220px"><div class="tarjeta"><span class="franja" style="background:var(--m1)"></span><div class="cuerpo"><div class="ti">Tarjeta de tarea</div><div class="mat">Franja = color de la materia</div></div></div><small>ElevatedCard</small></div>
+    <div><div class="anillo" style="width:56px;height:56px"><span style="width:44px;height:44px">25%</span></div><small>CircularProgressIndicator</small></div>
+    <div style="width:180px"><div class="barra"><i style="width:60%;background:var(--prog)"></i></div><small>LinearProgressIndicator</small></div>
+  </div>
+
+  <h3 style="font-size:15px">4. Flujo de navegación</h3>
+  <div class="flujo">
+    <div class="nodo" style="background:#DDE1FF">Barra inferior<br><b>Inicio · Tareas · Materias · Avances</b></div>
+    <div class="flecha">↓ toca una tarea</div>
+    <div class="nodo">Detalle de tarea<br><small>cambiar estado · historial</small></div>
+    <div class="flecha">↓ ✎ Editar &nbsp;&nbsp;|&nbsp;&nbsp; FAB ＋ desde Inicio/Tareas ↓</div>
+    <div class="nodo">Formulario de tarea<br><small>validación · calendario</small></div>
+    <div class="flecha">↓ Guardar → regresa a la pantalla anterior</div>
+    <div class="nodo" style="background:#B2EBE3">La lista y las estadísticas se actualizan automáticamente</div>
+  </div>
+  <p style="font-size:12px;color:var(--texto-2)">Diagrama completo y tabla de transiciones: <code>02_Mapa_Navegacion/Mapa_Navegacion.md</code>. Iconos: Material Icons (en esta maqueta se representan con símbolos de texto).</p>
 </div>
+
+<style>
+  .muestras{display:flex;flex-wrap:wrap;gap:12px} .muestras div{width:118px;font-size:11px} .muestras span{display:block;height:44px;border-radius:8px;margin-bottom:4px}
+  .mini{display:inline-block;width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-right:3px}
+  .galeria{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start} .galeria>div{display:flex;flex-direction:column;gap:4px} .galeria small{color:var(--texto-2);font-size:11px}
+  .flujo{display:flex;flex-direction:column;align-items:center;gap:4px} .nodo{border:1px solid var(--borde);border-radius:10px;padding:8px 14px;text-align:center;font-size:12px;background:#fff;min-width:260px} .flecha{font-size:12px;color:var(--primario)}
+  .chip,.seg span,.chk{cursor:pointer}
+</style>
+<script>
+  // Modo de captura para el expediente: ?solo=p1 muestra solo esa pantalla; ?solo=guia solo la guía de estilo.
+  const solo = new URLSearchParams(location.search).get("solo");
+  if (solo) {
+    document.querySelectorAll("h1, p.sub, nav.indice").forEach(e => e.style.display = "none");
+    document.querySelectorAll(".marco").forEach(m => m.style.display = m.querySelector("#" + solo) ? "" : "none");
+    document.getElementById("guia").style.display = solo === "guia" ? "" : "none";
+    if (solo === "guia") document.getElementById("guia").style.marginTop = "0";
+    document.body.style.padding = "4px";
+  }
+  // Prototipo funcional: filtros, búsqueda, casillas y formulario con las mismas reglas que la app (RN-01, RN-03, RN-04).
+  const filtros = {estado: "", prioridad: ""};
+  function aplicarFiltros() {
+    const texto = document.getElementById("buscar").value.trim().toLowerCase();
+    const tarjetas = [...document.querySelectorAll("#lista-tareas .tarjeta")];
+    let visibles = 0;
+    tarjetas.forEach(t => {
+      const ok = (!filtros.estado || t.dataset.estado === filtros.estado) &&
+                 (!filtros.prioridad || t.dataset.prioridad === filtros.prioridad) &&
+                 (!texto || t.textContent.toLowerCase().includes(texto));
+      t.style.display = ok ? "" : "none"; if (ok) visibles++;
+    });
+    document.getElementById("contador").textContent = `${visibles} de ${tarjetas.length} tareas`;
+    document.getElementById("sin-resultados").style.display = visibles ? "none" : "block";
+  }
+  document.querySelectorAll(".chips[data-filtro]").forEach(fila => fila.addEventListener("click", e => {
+    const chip = e.target.closest(".chip"); if (!chip) return;
+    const clave = fila.dataset.filtro, v = chip.dataset.v;
+    filtros[clave] = (filtros[clave] === v && clave !== "estado") ? "" : v;
+    fila.querySelectorAll(".chip").forEach(c => c.classList.toggle("sel", c.dataset.v === filtros[clave] && (v !== "" || clave === "estado")));
+    aplicarFiltros();
+  }));
+  document.getElementById("buscar").addEventListener("input", aplicarFiltros);
+  // Casilla: alterna Completada / Pendiente (RF-13) sin navegar al detalle
+  document.getElementById("lista-tareas").addEventListener("click", e => {
+    const chk = e.target.closest(".chk"); if (!chk) return;
+    e.preventDefault();
+    const t = chk.closest(".tarjeta"), pil = t.querySelector(".pil-estado"), comp = !chk.classList.contains("on");
+    chk.classList.toggle("on", comp);
+    t.dataset.estado = comp ? "Completada" : "Pendiente";
+    pil.textContent = t.dataset.estado; pil.style.background = comp ? "#DDEEDD" : "#E6ECEF"; pil.style.color = comp ? "var(--comp)" : "var(--pend)";
+    t.querySelector(".ti").style.textDecoration = comp ? "line-through" : "none";
+    aplicarFiltros();
+  });
+  // Botones segmentados
+  document.querySelectorAll(".seg").forEach(s => s.addEventListener("click", e => {
+    const b = e.target.closest("span"); if (!b) return;
+    s.querySelectorAll("span").forEach(x => { x.classList.remove("on"); x.textContent = x.textContent.replace("✓ ", ""); });
+    b.classList.add("on"); b.textContent = "✓ " + b.textContent;
+  }));
+  // Formulario: mismas validaciones que ValidadorTarea
+  const hoyISO = new Date().toISOString().slice(0, 10);
+  document.getElementById("f-fecha").min = hoyISO;
+  function marcar(id, campo, msg) { document.getElementById(id).textContent = msg || ""; campo.classList.toggle("err", !!msg); return !msg; }
+  function registrarTarea() {
+    const tit = document.getElementById("f-titulo"), mat = document.getElementById("f-materia"), fec = document.getElementById("f-fecha");
+    const t = tit.value.trim();
+    const ok = [
+      marcar("e-titulo", tit, !t ? "El título es obligatorio" : t.length < 3 ? "El título debe tener al menos 3 caracteres" : t.length > 80 ? "El título no puede superar 80 caracteres" : ""),
+      marcar("e-materia", mat, mat.value ? "" : "Selecciona una materia"),
+      marcar("e-fecha", fec, !fec.value ? "Selecciona la fecha de entrega" : fec.value < hoyISO ? "La fecha de entrega no puede ser anterior a hoy" : ""),
+    ].every(Boolean);
+    if (!ok) return false;
+    const pr = document.querySelector("#f-prioridad .on").dataset.v;
+    const col = {alta: ["#FBE3E3", "var(--alta)"], media: ["#FDEBDD", "var(--media)"], baja: ["#DDEEDD", "var(--baja)"]}[pr];
+    const a = document.createElement("a");
+    a.className = "tarjeta"; a.href = "#p5"; a.dataset.estado = "Pendiente"; a.dataset.prioridad = pr;
+    a.innerHTML = `<span class="franja" style="background:var(--m1)"></span><span class="chk"></span><div class="cuerpo"><div class="ti"></div><div class="mat"></div><div class="pildoras"><span class="pil" style="background:${col[0]};color:${col[1]}">Prioridad ${pr}</span><span class="pil pil-estado" style="background:#E6ECEF;color:var(--pend)">Pendiente</span></div><div class="fecha">📅 ${fec.value}</div></div>`;
+    a.querySelector(".ti").textContent = t; a.querySelector(".mat").textContent = mat.value;
+    document.getElementById("lista-tareas").prepend(a);
+    tit.value = ""; document.getElementById("f-desc").value = ""; mat.value = ""; fec.value = "";
+    aplicarFiltros();
+    location.hash = "#p2";
+    return false;
+  }
+</script>
 </body>
 </html>

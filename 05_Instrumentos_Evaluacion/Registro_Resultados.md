@@ -21,9 +21,12 @@ Entorno de las pruebas que ya se ejecutaron (2026-11-20, ejecutadas por Claude C
 | `CalculadoraAvanceTest` | Unitaria (JVM) | 〃 | 13 | 13 | 0 |
 | `FiltroTareasTest` | Unitaria (JVM) | 〃 | 10 | 10 | 0 |
 | `FormatoFechasTest` | Unitaria (JVM) | 〃 | 5 | 5 | 0 |
-| `RepositorioAcademicoTest` | Instrumentada (Room en memoria, emulador) | `gradlew connectedDebugAndroidTest` | 14 | 14 | 0 |
+| `RepositorioAcademicoTest` | Instrumentada (Room en memoria y en disco, emulador) | `gradlew connectedDebugAndroidTest` | 16 | 16 | 0 |
 | `FlujoPrincipalTest` | Instrumentada de UI de extremo a extremo (Compose UI Test) | 〃 | 2 | 2 | 0 |
-| **Total** | | | **67** | **67** | **0** |
+| **Total app** | | | **69** | **69** | **0** |
+| Prototipo HTML (`03_Maquetado`) | JavaScript en Edge headless (arnés de prueba) | — | 14 | 14 | 0 |
+
+Las 18 instrumentadas se ejecutaron dos veces: el 2026-11-20 en la primera versión (16 pruebas) y de nuevo sobre el código final, después de agregar las pruebas de inyección SQL y persistencia en disco y el ajuste del buscador.
 
 - **Reportes HTML generados por Gradle:** `app-android/app/build/reports/tests/testDebugUnitTest/index.html` y `app-android/app/build/reports/androidTests/connected/debug/index.html`. Se regeneran al volver a ejecutar los comandos.
 - **Defectos que encontraron estas pruebas durante el desarrollo** (ya corregidos; véase `06_Desarrollo_Agentico/Problemas_y_Soluciones.md`):
@@ -106,7 +109,7 @@ Comando: `adb shell am start -W -S -n com.equipo1.agendaacademica/.MainActivity`
 `adb shell dumpsys meminfo com.equipo1.agendaacademica` con los datos de ejemplo cargados, en la pantalla de Inicio (build release): **TOTAL PSS = 49 266 KB (≈ 48 MB)** → Aprobado (meta < 150 MB).
 
 ### R-5 Tamaño del APK ✅
-- Debug: 19 523 814 bytes (≈ 18.6 MB).
+- Debug (versión final): 19 549 696 bytes (≈ 18.6 MB).
 - Release sin minificar: 13 096 352 bytes (≈ 12.5 MB).
 
 ### R-2 y R-3 — PENDIENTE (cronómetro o grabación en un dispositivo físico)
@@ -125,8 +128,8 @@ Comando: `adb shell am start -W -S -n com.equipo1.agendaacademica/.MainActivity`
 | C-2 Abre sin cierres | ✅ Funciona (sesión de pruebas y capturas sin cierres de la app). *Nota:* el emulador mostró una vez "System UI isn't responding": es un ANR del propio sistema por la lentitud del renderizado por software, no de la app | |
 | C-3 Pantallas completas | ✅ Funciona (capturas 01–18) | |
 | C-4 Tema claro / oscuro | ✅ Funciona (captura 17 en tema oscuro) | |
-| C-5 Rotación | Pendiente | |
-| C-6 Fuente grande | Pendiente | |
+| C-5 Rotación | ✅ Funciona. Con el formulario a medio llenar ("Prueba de rotacion") se giró a horizontal y de vuelta a vertical: el texto se conservó, el proceso no se reinició (mismo PID 5655) y el diseño horizontal es usable con desplazamiento (captura 19) | |
+| C-6 Fuente grande | ✅ Funciona tras una corrección. Con `font_scale` = 1.3 (mayor que "Grande") los textos se ajustan en varias líneas y los chips se desplazan horizontalmente (capturas 20–22). **Defecto encontrado:** el texto indicativo del buscador ocupaba 2 líneas → se limitó a 1 línea con "…" y se verificó de nuevo (captura 21) | |
 | C-7 Idioma del sistema | ✅ El emulador está en inglés y la app se muestra completamente en español | |
 | C-8 Navegación por gestos | ✅ (el emulador usa gestos) | |
 
@@ -137,7 +140,7 @@ Comando: `adb shell am start -W -S -n com.equipo1.agendaacademica/.MainActivity`
 | ID | Resultado | Evidencia | Riesgo |
 |---|---|---|---|
 | S-1 Validación de entradas | ✅ Cumple | 23 pruebas unitarias de validadores + `FlujoPrincipalTest` (formulario vacío → 3 errores; materia duplicada → error) | — |
-| S-2 Inyección SQL | ✅ Cumple (revisión de código); prueba manual **pendiente** | Todas las consultas de `Daos.kt` usan parámetros `:param` de Room; no se construye SQL con cadenas | Bajo |
+| S-2 Inyección SQL | ✅ Cumple | Revisión de código: todas las consultas de `Daos.kt` usan parámetros `:param` de Room. Prueba automatizada `textoConSqlMalicioso_seGuardaLiteralYNoAfectaLaBase`: el título `'); DROP TABLE tareas;--` se guarda literal y la tabla sigue intacta | — |
 | S-3 Integridad referencial | ✅ Cumple | Prueba `llaveForaneaRestrict_impideBorrarMateriaDesdeLaBaseDeDatos` aprobada | — |
 | S-4 Permisos mínimos | ✅ Cumple | `dumpsys package`: el único permiso es `…DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`, un permiso interno de firma que agrega AndroidX automáticamente. No hay permisos de red, cámara, ubicación ni almacenamiento | — |
 | S-5 Almacenamiento privado | ✅ Cumple | Room guarda `agenda_academica.db` en el directorio privado de la app | — |

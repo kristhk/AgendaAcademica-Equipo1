@@ -1,7 +1,7 @@
 # Prompts relevantes utilizados con Claude Code
 
 Herramienta: Claude Code (CLI) · Modelo: Claude Opus 5.5 · Fecha: 2026-11-20.
-Los prompts 1 y 2 son los que el equipo escribió al agente (se transcriben completos). La sección 3 resume las instrucciones de trabajo que el agente siguió dentro de la sesión.
+Los prompts 1, 2 y 3 son los que el equipo escribió al agente (se transcriben completos). La sección 3 resume las instrucciones de trabajo que el agente siguió dentro de la sesión.
 
 ---
 
@@ -70,6 +70,51 @@ Al terminar, entrégame:
 - Pruebas ejecutadas.
 - Pendientes para la entrega del lunes.
 ```
+
+---
+
+## Prompt 3 — Decisiones del equipo: formato, maquetas y Git
+
+```text
+Te confirmo las tres decisiones:
+
+1. EXPEDIENTE: Genera la documentación final en DOCX y PDF, conservando también los archivos Markdown editables. Organiza todos los entregables en carpetas claramente identificadas. Si alguna conversión requiere instalar herramientas nuevas, consúltame primero.
+
+2. MAQUETAS: Utiliza un prototipo HTML navegable y funcional que represente las pantallas principales de la aplicación Android. Verifica nuevamente los documentos originales para confirmar que Figma o Penpot no sean obligatorios. Si son obligatorios, avísame antes de continuar. Incluye colores, tipografías, componentes y flujo de navegación.
+
+3. GIT: Sí, te autorizo a inicializar un repositorio Git local dentro de ProyectoExamenMoviles. Configura correctamente .gitignore para Android, crea commits descriptivos y utiliza el historial como evidencia del desarrollo agéntico. No publiques el repositorio en GitHub ni en servicios externos sin consultarme.
+
+IMPORTANTE:
+Antes de continuar, revisa el estado real del proyecto. No asumas que las funcionalidades están terminadas.
+
+Continúa con la implementación de la aplicación Android del Equipo 1: Gestión de Tareas Académicas.
+
+Prioriza:
+- Implementar todas las funciones obligatorias del examen.
+- Compilar correctamente con Gradle.
+- Generar el APK.
+- Ejecutar las pruebas técnicas disponibles.
+- Completar el expediente documental.
+- Preparar las evidencias de desarrollo agéntico.
+
+Trabaja de manera continua dentro de la carpeta del proyecto. No modifiques los documentos originales ni realices cambios permanentes del sistema.
+
+Registra tus avances en ESTADO_PROYECTO.md.
+
+Si alguna prueba requiere usuarios reales, deja los resultados pendientes y prepara los instrumentos correspondientes. No inventes datos ni evidencias.
+
+Al finalizar, indícame exactamente qué está terminado, qué pruebas se ejecutaron, dónde se encuentra el APK y qué falta para la entrega del lunes.
+
+Continúa ahora.
+```
+
+**Resultado:**
+- Se verificó que Figma y Penpot son opcionales.
+- Se creó un repositorio Git local con commits por etapas.
+- Se hizo una compilación limpia y se agregaron 2 pruebas instrumentadas (en total, 69 pruebas de la app aprobadas).
+- Se probaron la rotación y la fuente grande, lo que reveló un defecto menor que se corrigió.
+- El prototipo quedó funcional, con 14 pruebas JavaScript.
+- Se generó el expediente en DOCX y PDF sin instalar software.
 
 ---
 

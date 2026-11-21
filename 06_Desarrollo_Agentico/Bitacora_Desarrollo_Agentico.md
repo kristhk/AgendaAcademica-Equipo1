@@ -58,10 +58,13 @@
 ## 3. Estructura del proyecto
 
 ```
-ProyectoExamenMoviles/
-├── PLAN_PROYECTO.md · ESTADO_PROYECTO.md
+ProyectoExamenMoviles/                 ← repositorio Git local
+├── LEEME.md · PLAN_PROYECTO.md · ESTADO_PROYECTO.md
+├── 00_Expediente_Final/               ← expediente consolidado (DOCX + PDF, con portada e índice)
 ├── 01_Analisis_Requerimientos/  02_Mapa_Navegacion/  03_Maquetado/
-├── 04_Modelo_Datos/  05_Instrumentos_Evaluacion/  06_Desarrollo_Agentico/  07_APK/
+├── 04_Modelo_Datos/  05_Instrumentos_Evaluacion/  06_Desarrollo_Agentico/   (cada uno: .md + .docx + .pdf)
+├── 07_APK/                            ← APK instalable
+├── herramientas/                      ← scripts que generan el DOCX/PDF a partir del Markdown
 └── app-android/                       ← proyecto Gradle (abrir esta carpeta en Android Studio)
     ├── settings.gradle.kts · build.gradle.kts · gradle.properties · gradle/libs.versions.toml
     ├── gradlew · gradlew.bat · gradle/wrapper/
@@ -77,7 +80,7 @@ ProyectoExamenMoviles/
             │   └── ui/    FabricaViewModels · navegacion/ · theme/ · componentes/
             │              inicio/ · tareas/ · materias/ · avances/ · detalle/ · formulario/
             ├── test/…        ValidadoresTest.kt · CalculosTest.kt       (51 pruebas unitarias)
-            └── androidTest/… RepositorioAcademicoTest.kt · FlujoPrincipalTest.kt (16 instrumentadas)
+            └── androidTest/… RepositorioAcademicoTest.kt · FlujoPrincipalTest.kt (18 instrumentadas)
 ```
 
 Código fuente: **26 archivos Kotlin**, 22 de la app (2 994 líneas) y 4 de pruebas (485 líneas).
@@ -95,11 +98,17 @@ Código fuente: **26 archivos Kotlin**, 22 de la app (2 994 líneas) y 4 de prue
 | 7 | Pruebas instrumentadas | Arrancó el emulador sin ventana (`-no-snapshot-save`, sin alterar el AVD). Las 14 de repositorio pasaron a la primera. Las de UI fallaron 2 veces por causas del entorno (Espresso con API 37 y la semántica del FAB) → corrigió. Resultado: 16/16. | — |
 | 8 | Rendimiento y capturas | Midió el arranque en frío (debug ≈ 11 s; release ≈ 3.8 s; *Ajustes* del sistema ≈ 3.7 s en el mismo emulador). Para medir el release lo firmó con la llave de depuración (solo para pruebas). Tomó 18 capturas reales con `adb screencap`. | — |
 | 9 | Documentación | Generó los entregables 1–6, el registro de resultados (solo lo ejecutado), el cuestionario SUS, la calculadora SUS (verificada con valores de referencia) y `ESTADO_PROYECTO.md`. | El equipo exigió **no inventar resultados de usuarios ni capturas**. |
+| 10 | Confirmación (2.ª iteración) | — | El equipo decidió: **expediente en DOCX y PDF** conservando el Markdown; **prototipo HTML** (tras verificar que Figma y Penpot son opcionales); **autorizó Git local** sin publicarlo; pidió revisar el estado real sin dar nada por terminado. |
+| 11 | Verificación | Releyó el enunciado: *"Se pueden utilizar Figma, Penpot u otras herramientas de diseño"* → opcional. Inicializó Git con `.gitignore` y `.gitattributes` para Android y registró el trabajo en commits por etapas (con su fecha real). Hizo una compilación limpia (`clean assembleDebug`): BUILD SUCCESSFUL, 51/51 unitarias. | Identidad Git solo local al repositorio. |
+| 12 | Pruebas nuevas | Agregó pruebas de inyección SQL (S-2) y de persistencia en disco (RNF-02): 18/18 instrumentadas. Aplicó en el emulador la rotación (C-5) y la fuente al 130 % (C-6). C-6 reveló un defecto menor en el buscador, que se corrigió y volvió a verificar. | — |
+| 13 | Prototipo funcional | Convirtió el prototipo en funcional (filtros, búsqueda, casillas y formulario con las mismas validaciones que la app) y agregó una guía de estilo con colores, tipografía, componentes y flujo. Lo verificó con 14 pruebas JavaScript en Edge headless. | — |
+| 14 | Expediente DOCX/PDF | Creó `herramientas/generar_expediente.py` + `exportar_word.ps1`: Markdown → HTML (convertidor propio), Mermaid y pantallas del prototipo → PNG (Edge headless), HTML → DOCX/PDF (Word por COM). Generó un DOCX y un PDF por entregable y el expediente consolidado con portada e índice en `00_Expediente_Final/`. | Sin instalar software: usa Word y Edge, que ya estaban instalados. |
 
 ## 5. Generación, revisión e integración del código
 
 - **Generación:** el agente escribió cada archivo completo a partir del análisis de requerimientos y del modelo de datos.
-- **Revisión automática:** el compilador de Kotlin y el procesador de Room (KSP) verifican los tipos y el SQL al compilar; además se ejecutaron 67 pruebas automatizadas.
+- **Revisión automática:** el compilador de Kotlin y el procesador de Room (KSP) verifican los tipos y el SQL al compilar; además se ejecutaron 69 pruebas automatizadas de la app y 14 del prototipo.
+- **Evidencia en Git:** cada etapa quedó en un commit descriptivo con el trailer `Co-Authored-By: Claude` (ver el anexo *Historial Git*).
 - **Revisión visual:** el agente revisó las capturas reales de cada pantalla (claro y oscuro) antes de documentarlas.
 - **Integración de interfaces y modelo de datos:** las pantallas observan los `Flow` de Room a través del repositorio. Cualquier cambio (por ejemplo, completar una tarea) se refleja automáticamente en el Inicio, en Tareas, en Materias y en Avances sin recargar.
 - **Validación de requerimientos:** véase la matriz de trazabilidad en `01_Analisis_Requerimientos` (§12) y `05_Instrumentos_Evaluacion/Registro_Resultados.md`.
@@ -114,15 +123,21 @@ Código fuente: **26 archivos Kotlin**, 22 de la app (2 994 líneas) y 4 de prue
 
 ## 7. Decisiones tomadas por el agente que el equipo debe validar
 
+**Decisiones ya confirmadas por el equipo (2.ª iteración):**
+- Expediente en **DOCX y PDF**, conservando los archivos Markdown editables.
+- Maquetas como **prototipo HTML navegable y funcional**; se verificó en el enunciado que Figma y Penpot son opcionales.
+- **Git local autorizado**, sin publicar en servicios externos.
+
+**Decisiones del agente que el equipo aún puede revisar:**
+
 | Decisión | Alternativa | Motivo |
 |---|---|---|
-| Expediente en **Markdown** (en lugar de DOCX/PDF) | Convertir a DOCX/PDF | El formato no estaba confirmado; Markdown se versiona y convierte fácilmente (por ejemplo, con Pandoc o pegándolo en Word) |
-| Maquetas como **HTML navegable** | Figma / Penpot | El agente no puede operar Figma; el examen acepta "otras herramientas" |
 | **Sin login, PIN ni roles** | PIN local | La app es personal y monousuario; se declara como limitación (S-9) |
 | `minSdk 26` (Android 8.0) | 24 | Permite usar `java.time` sin *desugaring*; cubre la gran mayoría de los dispositivos actuales |
 | Datos de ejemplo cargables desde la app | Precarga automática | La demostración es rápida sin mezclar datos ficticios con los reales (RN-12) |
 | Release firmado con la llave debug | Keystore propio | Solo para medir el rendimiento; **no es apto para publicarse en una tienda** |
-| **No se inicializó git** | `git init` + commits | Quedó como pregunta abierta en el plan; es recomendable como evidencia |
+| Los APK no se versionan en Git (`*.apk` en `.gitignore`) | Incluirlos | Son binarios regenerables de unos 19 MB; se entregan en `07_APK/` y su huella SHA-256 está en `ESTADO_PROYECTO.md` |
+| Commits agrupados por etapas, creados al autorizarse Git | Un commit por cada cambio | Git se autorizó después de la primera iteración; para no falsear la historia, los commits llevan su fecha real y el anexo *Historial Git* lo explica |
 
 ## 8. Limitaciones de la herramienta observadas
 

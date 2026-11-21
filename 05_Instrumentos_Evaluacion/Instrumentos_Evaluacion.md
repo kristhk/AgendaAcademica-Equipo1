@@ -8,12 +8,12 @@ Cada instrumento especifica **objetivo, criterios o indicadores, escala, procedi
 
 | # | Instrumento | Estado de aplicación |
 |---|---|---|
-| 1 | Lista de verificación funcional | 🟡 Parte automatizada ejecutada (51 unitarias + 16 instrumentadas, todas aprobadas). **Pendiente:** aplicación manual por el equipo con su firma. |
+| 1 | Lista de verificación funcional | 🟡 Parte automatizada ejecutada (51 unitarias + 18 instrumentadas, todas aprobadas). **Pendiente:** aplicación manual por el equipo con su firma. |
 | 2 | Pruebas de usabilidad (tareas + SUS) | 🔴 **Pendiente:** requiere participantes reales. Instrumentos, guion y calculadora listos. |
 | 3 | Evaluación de interfaz | 🟡 Pendiente de que evaluadores del equipo llenen la rúbrica. |
-| 4 | Pruebas de rendimiento | 🟢 Arranque en frío medido en el emulador (ver registro). Pendiente de repetir en un dispositivo físico. |
-| 5 | Pruebas de compatibilidad | 🟢 Emulador Pixel 6, API 37: aprobado. Pendiente: dispositivo físico. |
-| 6 | Evaluación de seguridad | 🟢 Verificaciones técnicas ejecutadas (permisos, banderas, validación). |
+| 4 | Pruebas de rendimiento | 🟢 Arranque en frío, memoria y tamaño medidos en el emulador (ver registro). Pendiente: repetir en un dispositivo físico; R-2 y R-3 con cronómetro. |
+| 5 | Pruebas de compatibilidad | 🟢 Emulador Pixel 6, API 37: C-1 a C-8 aprobados (C-6 después de corregir un defecto menor). Pendiente: dispositivo físico. |
+| 6 | Evaluación de seguridad | 🟢 S-1 a S-8 cumplen (S-2 con prueba automatizada); S-9 es una limitación declarada. |
 
 ---
 

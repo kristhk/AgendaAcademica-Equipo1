@@ -18,6 +18,17 @@ Todos los problemas se detectaron porque el agente **ejecutó** la compilación,
 | 12 | Capturas | `adb pull /sdcard/ui.xml` falló y algunos toques no encontraban los elementos | Git Bash convierte las rutas `/sdcard/...` a rutas de Windows; el emulador es lento y se leía la pantalla antes de que cambiara | `MSYS_NO_PATHCONV=1`, lectura con `adb exec-out cat`, esperas más largas y verificación del contenido antes de cada captura | 18 capturas correctas (revisadas visualmente) |
 | 13 | Emulador | Diálogo "System UI isn't responding" | ANR de la interfaz del sistema por el renderizado por software (no es de la app) | Se cerró con *Wait* y se repitió la captura | Ninguna captura incluye el diálogo |
 
+### Segunda iteración (expediente DOCX/PDF, Git y compatibilidad)
+
+| # | Fase | Problema (evidencia real) | Causa | Solución | Verificación |
+|---|---|---|---|---|---|
+| 14 | Compatibilidad C-6 | Con la fuente del sistema al 130 %, el texto indicativo del buscador ocupaba 2 líneas y agrandaba el campo | `Text` del placeholder sin límite de líneas | `maxLines = 1` y `overflow = Ellipsis` en `ui/tareas/Tareas.kt` | Captura 21 repetida; 51 unitarias y 18 instrumentadas aprobadas después del cambio |
+| 15 | Capturas | Después de `connectedDebugAndroidTest` la app ya no estaba en el emulador y las capturas salían vacías | El Android Gradle Plugin desinstala la app al terminar las pruebas instrumentadas | Se reinstaló con `adb install -r` antes de capturar; las capturas inválidas se borraron | Capturas 19–22 revisadas visualmente |
+| 16 | Emulador | "System UI isn't responding" de forma persistente tras el arranque | Interfaz del sistema saturada por el renderizado por software mientras Word, Edge y Gradle usaban CPU | Se reinició el emulador (`adb reboot`) y el script de captura descarta el diálogo automáticamente (botón *Wait*) antes de cada acción | La app funcionó normalmente bajo el diálogo (`Status: ok`) |
+| 17 | Expediente | `exportar_word.ps1`: "Argumento '1' debe ser System.Management.Automation.PSReference" al cerrar Word | `Word.Quit(0)` espera un parámetro por referencia en PowerShell | Se llama `Quit()` sin argumentos | Word termina sin errores |
+| 18 | Expediente | No hay Pandoc, LibreOffice ni `python-docx` para convertir Markdown | No están instalados y la regla es consultar antes de instalar | Convertidor Markdown→HTML propio (biblioteca estándar) + Edge headless (diagramas Mermaid y pantallas del prototipo) + Word por COM (DOCX/PDF) | DOCX y PDF generados para los 13 documentos y el expediente consolidado |
+| 19 | Git | Advertencias "LF will be replaced by CRLF" | `core.autocrlf=true` en Windows | `.gitattributes`: `gradlew` siempre con LF y los binarios protegidos | `gradlew` sigue ejecutable en Linux/macOS |
+
 ## Lecciones aprendidas
 
 1. **Compilar y probar siempre:** 5 de los 13 problemas habrían llegado a la entrega si solo se hubiera revisado el código a simple vista.

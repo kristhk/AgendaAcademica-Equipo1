@@ -6,10 +6,30 @@
 
 | Archivo | Contenido |
 |---|---|
-| `Prototipo_Navegable.html` | Maquetas de las 6 pantallas principales y de los diálogos, enlazadas entre sí como **prototipo navegable**. Se abre con doble clic en cualquier navegador. |
+| `Prototipo_Navegable.html` | **Prototipo navegable y funcional** con las 6 pantallas principales y los diálogos. Se abre con doble clic en cualquier navegador, sin conexión. |
+| `capturas_prototipo/*.png` | Imagen de cada pantalla del prototipo y de la guía de estilo (generadas con Edge headless para el DOCX/PDF). |
 | `../06_Desarrollo_Agentico/capturas_app/*.png` | Capturas **reales** de la app ejecutándose en el emulador Pixel 6 (para comparar la maqueta con la implementación). |
 
-> **Transparencia sobre la herramienta.** El examen sugiere Figma o Penpot "u otras herramientas". Este prototipo se generó como HTML/CSS con Claude Code a partir del mapa de navegación y de la guía de estilo de Material 3. Si el profesor exige Figma o Penpot, el equipo puede recrear estas mismas pantallas allí usando esta guía (véase *Pendientes* en `ESTADO_PROYECTO.md`).
+> **Herramienta de diseño.** El enunciado dice textualmente *"Se pueden utilizar Figma, Penpot u otras herramientas de diseño"* (Entregable 3); es una opción, **no una obligación**. El equipo eligió un prototipo HTML/CSS/JavaScript generado con Claude Code a partir del mapa de navegación y de la guía de Material 3. Ventajas: es funcional (filtra, valida y agrega tareas) y aplica exactamente los mismos colores y reglas que la app.
+
+**Qué es funcional en el prototipo** (14 comprobaciones automáticas ejecutadas en Edge headless, todas aprobadas):
+- Navegación entre todas las pantallas por enlaces y barra inferior.
+- Filtros por estado y prioridad, búsqueda por texto, contador "X de Y tareas" y estado "Sin resultados".
+- Casilla para completar o reabrir una tarea.
+- Formulario de nueva tarea con las mismas validaciones que la app: título de 3 a 80 caracteres, materia obligatoria, fecha obligatoria y no anterior a hoy. La tarea válida se agrega al inicio de la lista de P2.
+- Botones segmentados de prioridad.
+
+### Pantallas del prototipo
+
+| | | | |
+|---|---|---|---|
+| ![P0](capturas_prototipo/p0.png){width=135}<br>**P0** Bienvenida | ![P1](capturas_prototipo/p1.png){width=135}<br>**P1** Inicio | ![P2](capturas_prototipo/p2.png){width=135}<br>**P2** Tareas | ![P3](capturas_prototipo/p3.png){width=135}<br>**P3** Materias |
+| ![P4](capturas_prototipo/p4.png){width=135}<br>**P4** Avances | ![P5](capturas_prototipo/p5.png){width=135}<br>**P5** Detalle | ![P6](capturas_prototipo/p6.png){width=135}<br>**P6** Formulario | ![P6e](capturas_prototipo/p6e.png){width=135}<br>**P6** Validación |
+| ![D1](capturas_prototipo/d1.png){width=135}<br>**D1** Diálogo de materia | ![D3](capturas_prototipo/d3.png){width=135}<br>**D3** Eliminar materia | | |
+
+#### Guía de estilo (colores, tipografía, componentes y flujo)
+
+![Guía de estilo](capturas_prototipo/guia_estilo.png){width=600}
 
 ## 2. Pantallas maquetadas
 
